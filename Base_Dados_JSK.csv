@@ -1,0 +1,4 @@
+ID,Nome,Faixa,Data_Nascimento,RG_CPF,Anuidade_Em_Dia,Historico_Seminarios,Estado,Email,Telefone
+JSK-001,Almir Macedo Costa,10º Dan,15/05/1960,123.456.789-00,Sim,"Seminário Nacional 2025; Seminário Internacional Coreia 2023",SP,almir@jsk.com.br,(11) 99999-0001
+JSK-002,Maria Silva,3º Gub,10/08/1990,987.654.321-00,Sim,"Seminário Regional SP 2025",SP,maria.silva@email.com,(11) 98888-0002
+JSK-003,João Santos,1º Dan,22/12/1985,456.789.123-00,Não,"Seminário de Instrutores 2024",RJ,joao.santos@email.com,(21) 97777-0003

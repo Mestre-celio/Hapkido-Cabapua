@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapkido JSK - Web App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar glass">
+            <div class="logo-area">
+                <h2>JSK Hapkido</h2>
+                <span class="subtitle">Confederação</span>
+            </div>
+            <nav>
+                <button class="nav-btn active" data-target="home">🏠 Home</button>
+                <button class="nav-btn" data-target="admin">👥 Administrativo</button>
+                <button class="nav-btn" data-target="pedagogico">📚 Pedagógico</button>
+                <button class="nav-btn" data-target="certificados">📜 Certificados</button>
+                <button class="nav-btn" data-target="loja">🛒 Loja Uracan</button>
+                <button class="nav-btn" data-target="contato">📞 Contato</button>
+            </nav>
+            <div class="sidebar-footer">
+                <small>v1.0.0 | Vanilla SPA</small>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Notification Toast -->
+            <div id="toast" class="toast hidden"></div>
+
+            <!-- HOME / DASHBOARD -->
+            <section id="home" class="section active">
+                <header class="section-header">
+                    <h1>Dashboard</h1>
+                </header>
+                <div class="metrics-grid">
+                    <div class="metric-card glass">
+                        <h3>Estados Ativos</h3>
+                        <p class="metric-value">12+</p>
+                    </div>
+                    <div class="metric-card glass">
+                        <h3>Membros Registrados</h3>
+                        <p class="metric-value" id="total-members">0</p>
+                    </div>
+                    <div class="metric-card glass">
+                        <h3>Anuidade em Dia</h3>
+                        <p class="metric-value" id="active-members">0</p>
+                    </div>
+                </div>
+                <div class="quote-block glass">
+                    <blockquote>
+                        "O Hapkido não é apenas uma arte marcial, é um caminho de harmonia, disciplina e evolução contínua do espírito."
+                    </blockquote>
+                    <cite>— GM Almir Macedo Costa</cite>
+                </div>
+            </section>
+
+            <!-- ADMINISTRATIVO -->
+            <section id="admin" class="section">
+                <header class="section-header">
+                    <h1>Gerenciamento de Membros</h1>
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="openMemberModal()">+ Novo Membro</button>
+                        <button class="btn btn-secondary" onclick="exportCSV()">📥 Exportar CSV</button>
+                        <label class="btn btn-secondary">
+                            📤 Importar CSV <input type="file" id="csv-import" accept=".csv" hidden onchange="importCSV(this)">
+                        </label>
+                    </div>
+                </header>
+                <div class="filters glass">
+                    <input type="text" id="search-input" placeholder="Buscar por nome ou ID..." oninput="renderMembers()">
+                    <select id="belt-filter" onchange="renderMembers()">
+                        <option value="">Todas as Faixas</option>
+                        <option value="10º Gub">10º Gub</option>
+                        <option value="1º Dan">1º Dan</option>
+                        <option value="10º Dan">10º Dan</option>
+                    </select>
+                </div>
+                <div class="table-container glass">
+                    <table id="members-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Faixa</th>
+                                <th>Anuidade</th>
+                                <th>Estado</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="members-tbody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- PEDAGÓGICO -->
+            <section id="pedagogico" class="section">
+                <header class="section-header">
+                    <h1>Portal Pedagógico</h1>
+                </header>
+                <div class="curriculum-grid">
+                    <div class="card glass">
+                        <div class="card-header">🎥 Aula Técnica: 10º Gub</div>
+                        <div class="card-body">
+                            <p>Fundamentos de queda e rolamento.</p>
+                            <button class="btn btn-primary">Simular Player</button>
+                        </div>
+                    </div>
+                    <div class="card glass">
+                        <div class="card-header">📖 Filosofia do Hapkido</div>
+                        <div class="card-body">
+                            <p>Os três princípios: Hwa (Harmonia), Won (Círculo), Wha (Unidade).</p>
+                            <button class="btn btn-secondary">Ler Artigo</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CERTIFICADOS -->
+            <section id="certificados" class="section">
+                <header class="section-header">
+                    <h1>Verificador de Certificados</h1>
+                </header>
+                <div class="search-box glass">
+                    <input type="text" id="cert-search" placeholder="Digite o ID do Membro (ex: JSK-001)">
+                    <button class="btn btn-primary" onclick="verifyCertificate()">Verificar</button>
+                </div>
+                <div id="certificate-display" class="certificate-container hidden glass">
+                    <div class="cert-header">
+                        <h2>CERTIFICADO DE REGISTRO JSK</h2>
+                        <div class="qr-placeholder">
+                            <div class="qr-code"></div>
+                            <small>Validado</small>
+                        </div>
+                    </div>
+                    <div class="cert-body">
+                        <p><strong>ID:</strong> <span id="cert-id"></span></p>
+                        <p><strong>Nome:</strong> <span id="cert-name"></span></p>
+                        <p><strong>Faixa:</strong> <span id="cert-belt"></span></p>
+                        <p><strong>Status:</strong> <span id="cert-status" class="status-valid"></span></p>
+                    </div>
+                    <div class="cert-footer">
+                        <p>Confederação JSK de Hapkido | Documento Digital</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LOJA URACAN -->
+            <section id="loja" class="section">
+                <header class="section-header">
+                    <h1>Loja Uracan (Parceiro)</h1>
+                </header>
+                <div class="shop-grid">
+                    <div class="card glass">
+                        <div class="card-header">Dobok JSK Premium</div>
+                        <div class="card-body">
+                            <p>Uniforme oficial bordado.</p>
+                            <p class="price">R$ 289,90</p>
+                            <span class="discount-code">Cupom: JSK10</span>
+                            <button class="btn btn-primary">Ver no Site</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CONTATO -->
+            <section id="contato" class="section">
+                <header class="section-header">
+                    <h1>Informações de Contato</h1>
+                </header>
+                <div class="contact-info glass">
+                    <p><strong>Email:</strong> contato@jskhapsido.com.br</p>
+                    <p><strong>Telefone:</strong> (11) 99999-0000</p>
+                    <p><strong>Endereço:</strong> São Paulo, SP - Brasil</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Member Modal -->
+    <div id="member-modal" class="modal hidden">
+        <div class="modal-content glass">
+            <span class="close-modal" onclick="closeMemberModal()">&times;</span>
+            <h2 id="modal-title">Adicionar Membro</h2>
+            <form id="member-form" onsubmit="saveMember(event)">
+                <input type="hidden" id="member-id">
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <input type="text" id="member-name" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Faixa</label>
+                        <select id="member-belt" required>
+                            <option value="10º Gub">10º Gub</option>
+                            <option value="1º Dan">1º Dan</option>
+                            <option value="10º Dan">10º Dan</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Data de Nascimento</label>
+                        <input type="date" id="member-dob" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>RG/CPF</label>
+                        <input type="text" id="member-rgcpf" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Anuidade em Dia?</label>
+                        <select id="member-anuidade">
+                            <option value="Sim">Sim</option>
+                            <option value="Não">Não</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Histórico de Seminários (separado por ;)</label>
+                    <input type="text" id="member-seminarios" placeholder="Ex: Seminário 2024; Workshop Coreia">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <input type="text" id="member-estado" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="member-email">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
